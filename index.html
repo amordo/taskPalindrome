@@ -21,31 +21,33 @@
                 justify-content: space-around;
                 align-items: center;
             }
-            .image {
-              position: absolute;
-              top: 50%;
-              left: 50%;
-              width: 160px;
-              height: 160px;
-              margin: -80px 0 0 -80px;
-              -webkit-animation:spin 4s linear infinite;
-              -moz-animation:spin 4s linear infinite;
-              animation:spin 4s linear infinite;
-          }
+            #myImage {
+  	            opacity: 0;
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    width: 160px;
+                    height: 160px;
+                    margin: -80px 0 0 -80px;
+                    -webkit-animation:spin 4s linear infinite;
+                    -moz-animation:spin 4s linear infinite;
+                    animation:spin 4s linear infinite;
+  	       }
           @-moz-keyframes spin { 100% { -moz-transform: rotate(360deg); } }
           @-webkit-keyframes spin { 100% { -webkit-transform: rotate(360deg); } }
           @keyframes spin { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }
         </style>
     </head>
   <body>
-    <img class="image" src="loading.png" alt="Flowers in Chania">
+    <img class="image" id="myImage" src="loading.png" alt="Loading">
 
     <div>
       <canvas id="canvas" align="center" oncontextmenu="event.preventDefault()"></canvas>
     </div>
 
     <script type='text/javascript'>
-      var statusElement = document.getElementById('status');
+      var myImage = document.getElementById('myImage');
+      myImage.style.display = 'block';
       var Module = {
         Zlib:
 /** @license zlib.js 2012 - imaya [ https://github.com/imaya/zlib.js ] The MIT License */(function() {'use strict';function l(a){throw a;}var r=void 0,t,aa=this;function v(a,b){var c=a.split("."),d=aa;!(c[0]in d)&&d.execScript&&d.execScript("var "+c[0]);for(var f;c.length&&(f=c.shift());)!c.length&&b!==r?d[f]=b:d=d[f]?d[f]:d[f]={}};var y="undefined"!==typeof Uint8Array&&"undefined"!==typeof Uint16Array&&"undefined"!==typeof Uint32Array&&"undefined"!==typeof DataView;new (y?Uint8Array:Array)(256);var z;for(z=0;256>z;++z)for(var B=z,ba=7,B=B>>>1;B;B>>>=1)--ba;var ca=[0,1996959894,3993919788,2567524794,124634137,1886057615,3915621685,2657392035,249268274,2044508324,3772115230,2547177864,162941995,2125561021,3887607047,2428444049,498536548,1789927666,4089016648,2227061214,450548861,1843258603,4107580753,2211677639,325883990,1684777152,4251122042,2321926636,335633487,1661365465,4195302755,2366115317,997073096,1281953886,3579855332,2724688242,1006888145,1258607687,3524101629,2768942443,901097722,1119000684,3686517206,2898065728,853044451,1172266101,3705015759,
@@ -93,21 +95,18 @@ k.p.toString(16)+", data=0x"+p.toString(16)))}return m};t.L=function(a){this.j=a
         },
         canvas: (function() {
           var canvas = document.getElementById('canvas');
-
           // As a default initial behavior, pop up an alert when webgl context is lost. To make your
           // application robust, you may want to override this behavior before shipping!
           // See http://www.khronos.org/registry/webgl/specs/latest/1.0/#5.15.2
           canvas.addEventListener("webglcontextlost", function(e) { alert('WebGL context lost. You will need to reload the page.'); e.preventDefault(); }, false);
-
           return canvas;
         })(),
         setStatus: function(text, current, total) {
           if (text.indexOf('...') > 0 && text.indexOf('/') > 0) {
-	            current = text.split('/')[0];
-	            total = text.split('/')[1];
-	            current = current.valueOf();
-	            total = total.valueOf();
-	            text = "Loading... " + current + '/' + total;
+              var nt = text.split('(')[1];
+		  	      current = nt.split('/')[0];
+		  	      total = nt.split('/')[1].slice(0, -1);
+		          if(myImage.style.opacity != 1) { myImage.style.opacity = current/total; }
           }
           var a = text.split('...');
           if (a.length > 1) {
@@ -125,7 +124,6 @@ k.p.toString(16)+", data=0x"+p.toString(16)))}return m};t.L=function(a){this.j=a
             if (Module.setStatus.hasOwnProperty('last') == false) Module.setStatus.last = 0;
             var now = Date.now();
             if (now - Module.setStatus.last < 1000) return; // if this is a progress update, skip it if too soon
-
             Module.setStatus.last = now;
           }
         },
